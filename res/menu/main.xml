@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_Chinese258"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/menu_title_Chinese258"/>
+    <item
+        android:id="@+id/action_English_words"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/menu_title_English_words"/>
+
+</menu>
