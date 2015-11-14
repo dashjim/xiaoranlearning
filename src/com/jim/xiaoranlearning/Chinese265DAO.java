@@ -78,10 +78,9 @@ public class Chinese265DAO implements ILearningContantDAO {
 		SharedPreferences preference = mAndroidContext.getSharedPreferences(KEY_MAIN_PREFERENCE, 0);
 		String[] strArr;
 
-		mWordsToLearn = mAndroidContext.getString(R.string.Chinese_265);
-		strArr = mWordsToLearn.split(",");
-		//init json strcture only for the fist time, the next time will use the persistent settings.
 		if (!preference.contains(CHINESE285.KEY_JSON_DATA_CHINESE285)) { //Do nothing if already in SD card. onStart()-> getLastStatus() will get them.
+			mWordsToLearn = mAndroidContext.getString(R.string.Chinese_265);
+			strArr = mWordsToLearn.split(",");
 			for (int i = 0; i < strArr.length; i++) {
 				ContentVO vo = new ContentVO();
 				vo.setRawSequence(i);
@@ -96,6 +95,7 @@ public class Chinese265DAO implements ILearningContantDAO {
 			}
 			Log.w(LOG_TAG, "on init content array length: "+ mContentArray.size());
 		}
+		//init json strcture only for the fist time, the next time will use the persistent settings.
 	}
 	
 	private Chinese265DAO(){

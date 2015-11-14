@@ -6,6 +6,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
@@ -31,8 +33,10 @@ public class MainActivity extends FragmentActivity {
 
 	private static final String LOG_TAG = "MainActivity";
 	private static Context mAndroidContext;
-		
+    private static int mDeviceWidth = 720;
+	private static float mScreenScaleDensity = 5;
 	/**
+	 * FIXME
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
 	 * fragments for each of the sections. We use a
 	 * {@link android.support.v4.app.FragmentPagerAdapter} derivative, which
@@ -54,7 +58,9 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
+        refreshDeviceWidth();
+
 		//init ContentDAO
 		mAndroidContext = getApplicationContext();
 		mContentDao = Chinese265DAO.getInstance();
@@ -74,14 +80,26 @@ public class MainActivity extends FragmentActivity {
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		mCurrentActivity = MainActivity.this;
 	}
-	
-	@Override
+
+    private void refreshDeviceWidth() {
+        mDeviceWidth = this.getResources().getDisplayMetrics().widthPixels;
+		mScreenScaleDensity = this.getResources().getDisplayMetrics().scaledDensity;
+        Log.d(LOG_TAG, "device width is: " + mDeviceWidth);
+    }
+
+    @Override
 	protected void onStart() {
 		super.onStart();
 		mViewPager.setCurrentItem(mContentDao.getLastStatus());
 		readEnglish();
 		Log.d(LOG_TAG, "onStart(): resume current position: "+ mViewPager.getCurrentItem());
 	}
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        refreshDeviceWidth(); // For rotation
+    }
 	
 	@Override
 	protected void onStop() {
@@ -110,8 +128,7 @@ public class MainActivity extends FragmentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_English_words:
-            	if (mContentDao instanceof Chinese265DAO) {//Need to switch
-            		//FIXME first save current status
+            	if (!(mContentDao instanceof EnglishWordsDAO)) {//Need to switch
             		onStop();
             		//load new data and status
             		mContentDao = EnglishWordsDAO.getInstance();
@@ -121,8 +138,7 @@ public class MainActivity extends FragmentActivity {
         		mSectionsPagerAdapter.notifyDataSetChanged();
             	break;
             case R.id.action_Chinese258:
-            	if (mContentDao instanceof EnglishWordsDAO) {//Need to switch
-            		//FIXME first save current status
+            	if (!(mContentDao instanceof Chinese265DAO)) {//Need to switch
             		onStop();
             		//load new data and status
             		mContentDao = Chinese265DAO.getInstance();
@@ -131,6 +147,16 @@ public class MainActivity extends FragmentActivity {
             	}
             	mSectionsPagerAdapter.notifyDataSetChanged();
             	break;
+            case R.id.action_English_chant:
+                if (!(mContentDao instanceof EnglishChantDAO)) {//Need to switch
+                    onStop();
+                    //load new data and status
+                    mContentDao = EnglishChantDAO.getInstance();
+                    mContentDao.init(mAndroidContext);
+                    onStart();
+                }
+                mSectionsPagerAdapter.notifyDataSetChanged();
+                break;
             default: //Chinese 258
             	break;
         }
@@ -157,7 +183,9 @@ public class MainActivity extends FragmentActivity {
 			Fragment fragment = new OneSlide();
 			Bundle args = new Bundle();
 			args.putInt(OneSlide.ARG_SECTION_NUMBER, position + 1);
+			args.putInt(OneSlide.ARG_SECTION_READ_TIMES, mContentDao.getCurrentDisplay(position).getDisplayTimes());
 			args.putCharSequence(OneSlide.ARG_SECTION_CONTENT, mContentDao.getCurrentDisplay(position).getContent());
+            args.putBoolean(OneSlide.ARG_SECTION_CONTENT_REMEMBERED, mContentDao.getCurrentDisplay(position).isKnown());
 			mContentDao.increaseDisplayTimes(position);
 			fragment.setArguments(args);
 			return fragment;
@@ -194,7 +222,9 @@ public class MainActivity extends FragmentActivity {
 		 * fragment.
 		 */
 		public static final String ARG_SECTION_NUMBER = "section_number";
+		public static final String ARG_SECTION_READ_TIMES = "section_read_times";
 		public static final String ARG_SECTION_CONTENT = "section_content";
+		public static final String ARG_SECTION_CONTENT_REMEMBERED = "section_content_remembered";
 
 		public OneSlide() {
 		}
@@ -207,40 +237,30 @@ public class MainActivity extends FragmentActivity {
 			TextView sequenceTextView = (TextView) rootView.findViewById(R.id.section_label);
 			TextView contentTextView = (TextView) rootView.findViewById(R.id.section_content);
 			
-			sequenceTextView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+			sequenceTextView.setText("NO. "+Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER))
+                                    + " - Learned "
+                                    + Integer.toString(getArguments().getInt(ARG_SECTION_READ_TIMES))
+                                    + " times"
+            );
 			CharSequence currentText = getArguments().getCharSequence(ARG_SECTION_CONTENT);
+			boolean isKnown = getArguments().getBoolean(ARG_SECTION_CONTENT_REMEMBERED);
 			contentTextView.setText(currentText);
 			
-/*			if (currentText.length()<5) {//change the font size
-				contentTextView.setTextSize(240f);
-			}else if (currentText.length()<7) {
-				contentTextView.setTextSize(160f);
-			}else if (currentText.length()<10) {
-				contentTextView.setTextSize(100f);
-			}else if (currentText.length()<13){
-				contentTextView.setTextSize(70f);
-			}else {
-				contentTextView.setTextSize(50f);
-			}*/
-			
-			if (mContentDao instanceof Chinese265DAO) {
-				contentTextView.setTextSize(240f);
-			}else {
-				
-				if (currentText.length()<5) {//change the font size
-					contentTextView.setTextSize((float) (240f*0.5));
-				}else if (currentText.length()<7) {
-					contentTextView.setTextSize((float) (160f*0.5));
-				}else if (currentText.length()<10) {
-					contentTextView.setTextSize((float) (110f*0.5));
-				}else if (currentText.length()<13){
-					contentTextView.setTextSize((float) (70f*0.5));
-				}else {
-					contentTextView.setTextSize((float) (50f*0.5));
-				}
-			}
-			
-			contentTextView.setLayerType(View.LAYER_TYPE_SOFTWARE, null); // a workaround of a big size text display bug
+            if (mContentDao instanceof Chinese265DAO) {
+                // need to change from pix to sp size
+                contentTextView.setTextSize((float)(mDeviceWidth/currentText.length()/ mScreenScaleDensity * 0.8));
+            }else if(mContentDao instanceof EnglishWordsDAO){
+                contentTextView.setTextSize((float)(mDeviceWidth/currentText.length()/ mScreenScaleDensity));
+            }else{
+                contentTextView.setTextSize((float)(mDeviceWidth/currentText.length()/ mScreenScaleDensity));
+            }
+
+            if (isKnown){
+                contentTextView.setTextColor(Color.BLUE);
+            }
+            Log.d(LOG_TAG, "current text size." + mDeviceWidth/currentText.length() / mScreenScaleDensity * 0.8);
+
+            contentTextView.setLayerType(View.LAYER_TYPE_SOFTWARE, null); // a workaround of a big size text display bug
 			contentTextView.setOnLongClickListener(new LongClickHandler());
 			
 			readEnglish();

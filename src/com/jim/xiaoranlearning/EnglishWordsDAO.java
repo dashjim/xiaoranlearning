@@ -65,10 +65,11 @@ public class EnglishWordsDAO implements ILearningContantDAO {
 		SharedPreferences preference = mAndroidContext.getSharedPreferences(KEY_MAIN_PREFERENCE, 0);
 		String[] strArr;
 
-		mWordsToLearn = mAndroidContext.getString(R.string.English_words);
-		strArr = mWordsToLearn.split(",");
-		//init json strcture only for the fist time, the next time will use the persistent settings.
 		if (!preference.contains(ENGLISH_WORDS.KEY_JSON_DATA_ENGLISH_WORDS)) { //Do nothing if already in SD card. onStart()-> getLastStatus() will get them.
+
+			mWordsToLearn = mAndroidContext.getString(R.string.English_words);
+			strArr = mWordsToLearn.split(",");
+			//init json strcture only for the fist time, the next time will use the persistent settings.
 			for (int i = 0; i < strArr.length; i++) {
 				ContentVO vo = new ContentVO();
 				vo.setRawSequence(i);
