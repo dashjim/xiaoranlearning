@@ -16,7 +16,7 @@ public class ContentVO implements Comparable<ContentVO>{
 	static public final String CONTENT = "content";
 	private static final String LOG_TAG = "ContentVO";
 	
-	private int rawSequence;
+	private Integer rawSequence;
 	private int displayTimes = 1;//when user see it it is already 1
 	private boolean isKnown = false;
 	private String content;
@@ -94,7 +94,7 @@ public class ContentVO implements Comparable<ContentVO>{
 //			return 1;
 //		}
 		//if both known or unknown
-		return this.rawSequence < target.rawSequence ? -1 :1;
+		return this.rawSequence.compareTo(target.rawSequence);
 	}
 	public void increaseDisplayTimes() {
 		displayTimes += 1;

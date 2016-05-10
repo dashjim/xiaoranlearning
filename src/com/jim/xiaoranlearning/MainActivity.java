@@ -6,8 +6,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
@@ -156,6 +158,12 @@ public class MainActivity extends FragmentActivity {
                     onStart();
                 }
                 mSectionsPagerAdapter.notifyDataSetChanged();
+                break;
+            case R.id.action_Manual:
+                String url = "http://blog.sevenche.com/2015/11/Android-app-for-kids-to-learn-Chinese/";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
                 break;
             default: //Chinese 258
             	break;
