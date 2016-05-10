@@ -171,4 +171,16 @@ public class EnglishChantDAO implements ILearningContantDAO {
     public int getContentLength(){
         return mContentArray.size();
     }
+
+
+    @Override
+    public void addContent(ContentVO aVO) {
+        aVO.setRawSequence(mContentArray.size());
+        mContentArray.add(aVO);
+    }
+
+    @Override
+    public void delete(int index) {
+        mContentArray.remove(index);
+    }
 }
