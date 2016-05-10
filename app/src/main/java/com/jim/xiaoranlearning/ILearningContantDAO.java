@@ -32,4 +32,7 @@ public interface ILearningContantDAO {
 
 	public abstract int getContentLength();
 
+	void addContent(ContentVO vo);
+
+	void delete(int currentItem);
 }

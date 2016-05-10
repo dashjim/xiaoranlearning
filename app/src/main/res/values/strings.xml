@@ -22,5 +22,9 @@
     <string name="ui_move_current_word_to_left">把当前的字移到最左边。</string>
     <string name="ui_OK">确定</string>
     <string name="ui_Cancel">取消</string>
+    <string name="ui_Delete">取消</string>
+    <string name="ui_add_new">新建</string>
+    <string name="ui_add_new_card">加入新卡片。</string>
+
     <string name="ui_next_time_takes_effect">下次启动生效</string>
 </resources>
