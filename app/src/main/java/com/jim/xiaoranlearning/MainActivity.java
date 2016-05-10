@@ -20,9 +20,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -242,6 +244,7 @@ public class MainActivity extends FragmentActivity {
 			
 			contentTextView.setLayerType(View.LAYER_TYPE_SOFTWARE, null); // a workaround of a big size text display bug
 			contentTextView.setOnLongClickListener(new LongClickHandler());
+			contentTextView.setOnTouchListener(new TouchClickHandler());
 			
 			readEnglish();
 			Log.i(LOG_TAG, "onCreatView() created display: "+ currentText + " current position: "+mViewPager.getCurrentItem());
@@ -262,14 +265,20 @@ public class MainActivity extends FragmentActivity {
 					.setIcon(android.R.drawable.ic_dialog_alert)
 					.setTitle(mAndroidContext.getString(R.string.ui_do_you_know_it))
 					.setMessage(mAndroidContext.getString(R.string.ui_move_current_word_to_left))
-					.setPositiveButton(mAndroidContext.getString(R.string.ui_OK),
-							new DialogInterface.OnClickListener() {
+					.setPositiveButton(mAndroidContext.getString(R.string.ui_OK), new DialogInterface.OnClickListener() {
 								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
+								public void onClick(DialogInterface dialog, int which) {
 									markAsKnown();
 								}
-							}).setNegativeButton(mAndroidContext.getString(R.string.ui_Cancel), null).show();
+							})
+					.setNegativeButton(mAndroidContext.getString(R.string.ui_Delete), new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							delete();
+						}
+					})
+					.setNeutralButton(mAndroidContext.getString(R.string.ui_Cancel), null)
+					.show();
 
 			return true; //don't want others to handle the event any more!
 		}
@@ -278,11 +287,46 @@ public class MainActivity extends FragmentActivity {
 			mContentDao.markKnown(mViewPager.getCurrentItem());
 			mSectionsPagerAdapter.notifyDataSetChanged();//Wish UI could change too.
 			Toast.makeText(mCurrentActivity, mAndroidContext.getString(R.string.ui_next_time_takes_effect), Toast.LENGTH_SHORT).show();
-			Log.d(LOG_TAG,"markAsKnown(): "+ mViewPager.getCurrentItem());
+			Log.d(LOG_TAG, "markAsKnown(): " + mViewPager.getCurrentItem());
+		}
+		public void delete(){
+			mContentDao.delete(mViewPager.getCurrentItem());
 		}
 	}
 
-	
+	/**
+	 * allow user to move a display to left.
+	 * @author ji5
+	 */
+	public static class TouchClickHandler implements View.OnTouchListener{
+
+		@Override
+		public boolean onTouch(View view, MotionEvent motionEvent) {
+
+			Log.d(LOG_TAG, "long pressed" + mViewPager.getCurrentItem());
+			final EditText input = new EditText(mCurrentActivity);
+			new AlertDialog.Builder(mCurrentActivity)
+					.setIcon(android.R.drawable.ic_dialog_info)
+					.setTitle(mAndroidContext.getString(R.string.ui_add_new))
+					.setMessage(mAndroidContext.getString(R.string.ui_add_new_card))
+					.setPositiveButton(mAndroidContext.getString(R.string.ui_OK),
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									saveNewCard(input.getText().toString());
+								}
+							}).setNegativeButton(mAndroidContext.getString(R.string.ui_Cancel), null).show();
+
+			return true; //don't want others to handle the event any more!
+		}
+
+		public void saveNewCard(String content){
+			ContentVO vo = new ContentVO();
+			vo.setContent(content);
+			mContentDao.addContent(vo);
+		}
+	}
+
 	private class TTSListener implements OnInitListener {
 		/**
 		 * the method defined for TTS
