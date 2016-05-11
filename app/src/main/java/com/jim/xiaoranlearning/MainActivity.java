@@ -41,12 +41,12 @@ public class MainActivity extends FragmentActivity {
 	private static float mScreenScaleDensity = 5;
 	/**
 	 * FIXME
-	 * The {@link android.support.v4.view.PagerAdapter} that will provide
+	 * The {@link PagerAdapter} that will provide
 	 * fragments for each of the sections. We use a
-	 * {@link android.support.v4.app.FragmentPagerAdapter} derivative, which
+	 * {@link FragmentPagerAdapter} derivative, which
 	 * will keep every loaded fragment in memory. If this becomes too memory
 	 * intensive, it may be best to switch to a
-	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+	 * {@link FragmentStatePagerAdapter}.
 	 */
 	static SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -94,6 +94,7 @@ public class MainActivity extends FragmentActivity {
     @Override
 	protected void onStart() {
 		super.onStart();
+		mSectionsPagerAdapter.notifyDataSetChanged();
 		mViewPager.setCurrentItem(mContentDao.getLastStatus());
 		readEnglish();
 		Log.d(LOG_TAG, "onStart(): resume current position: "+ mViewPager.getCurrentItem());
@@ -102,6 +103,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onResume(){
         super.onResume();
+		mSectionsPagerAdapter.notifyDataSetChanged();
         refreshDeviceWidth(); // For rotation
     }
 	
@@ -268,7 +270,7 @@ public class MainActivity extends FragmentActivity {
             if (isKnown){
                 contentTextView.setTextColor(Color.BLUE);
             }
-            Log.d(LOG_TAG, "current text size." + mDeviceWidth/currentText.length() / mScreenScaleDensity * 0.8);
+            Log.d(LOG_TAG, "current text size." + mDeviceWidth / currentText.length() / mScreenScaleDensity * 0.8);
 
             contentTextView.setLayerType(View.LAYER_TYPE_SOFTWARE, null); // a workaround of a big size text display bug
 			contentTextView.setOnLongClickListener(new LongClickHandler());
@@ -335,13 +337,17 @@ public class MainActivity extends FragmentActivity {
 			final EditText input = new EditText(mCurrentActivity);
 			new AlertDialog.Builder(mCurrentActivity)
 					.setIcon(android.R.drawable.ic_dialog_info)
+					.setView(input)
 					.setTitle(mAndroidContext.getString(R.string.ui_add_new))
 					.setMessage(mAndroidContext.getString(R.string.ui_add_new_card))
 					.setPositiveButton(mAndroidContext.getString(R.string.ui_OK),
 							new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
-									saveNewCard(input.getText().toString());
+									saveNewCard(input.getText().toString().length() > 1
+											? input.getText().toString() : ";-)");
+									mSectionsPagerAdapter.notifyDataSetChanged();
+
 								}
 							}).setNegativeButton(mAndroidContext.getString(R.string.ui_Cancel), null).show();
 
