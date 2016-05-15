@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -370,15 +371,19 @@ public class MainActivity extends AppCompatActivity {
 					longest = longest.length() > aSplit.length() ? longest : aSplit;
 				}
 				Log.d(LOG_TAG, "longest: "+ longest);
-				contentTextView.setTextSize((float)(mDeviceWidth/longest.length()/ mScreenScaleDensity *1.5));
+				contentTextView.setTextSize((float)(mDeviceWidth/longest.length()/ mScreenScaleDensity *1.4));
 			}else{
                 contentTextView.setTextSize((float)(mDeviceWidth/currentText.length()/ mScreenScaleDensity));
             }
 
             if (isKnown){
-                contentTextView.setTextColor(Color.BLUE);
+				Log.v(LOG_TAG, "text color: gray");
+				contentTextView.setTextColor(Color.GRAY);
+			}else{
+				Log.v(LOG_TAG, "text color: blue");
+				contentTextView.setTextColor(Color.BLUE);
 			}
-			Log.d(LOG_TAG, "current text size." + mDeviceWidth / currentText.length() / mScreenScaleDensity * 0.8);
+			Log.d(LOG_TAG, "current text size:" + mDeviceWidth / currentText.length() / mScreenScaleDensity * 0.8);
 
             contentTextView.setLayerType(View.LAYER_TYPE_SOFTWARE, null); // a workaround of a big size text display bug
 			contentTextView.setOnLongClickListener(new LongClickHandler());
