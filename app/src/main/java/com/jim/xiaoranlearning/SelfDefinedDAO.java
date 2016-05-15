@@ -1,29 +1,29 @@
 package com.jim.xiaoranlearning;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class EnglishChantDAO implements ILearningContentDAO {
+import org.json.JSONArray;
+import org.json.JSONException;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
+
+public class SelfDefinedDAO implements ILearningContentDAO {
 
     static public final String KEY_MAIN_PREFERENCE = "main_prefe";
 
-    public static class ENGLISH_CHANT{
-        static public final String KEY_LAST_POSITION_ENGLISH_CHANT = "last_position_english_CHANT";
-        static public final String KEY_JSON_DATA_ENGLISH_CHANT = "json_data_English_CHANT"; //JSON and its meta data
+    public static class SELF_DEFINED{
+        static public final String KEY_LAST_POSITION_SELF_DEFINED = "last_position_self_defined";
+        static public final String KEY_JSON_DATA_SELF_DEFINED = "json_data_self_defined"; //JSON and its meta data
     }
 
     private String mWordsToLearn = null;
     //	private String mWordsToLearn = "一二三四五六七";
     private Context mAndroidContext;
-    private static final String LOG_TAG = "EnglishChantDAO";
+    private static final String LOG_TAG = "SelfDefinedDAO";
 
-    private static EnglishChantDAO mDaoInstance = null;
+    private static SelfDefinedDAO mDaoInstance = null;
     private JSONArray mJsonArray;
     private ArrayList<ContentVO> mContentArray;
 
@@ -32,13 +32,13 @@ public class EnglishChantDAO implements ILearningContentDAO {
      * notice must ensure the androidContext initialized by setAndroidContext().
      * @return
      */
-    static public EnglishChantDAO getInstance(){
+    static public SelfDefinedDAO getInstance(){
 
         if (mDaoInstance == null) {
-            synchronized (EnglishChantDAO.class) {
+            synchronized (SelfDefinedDAO.class) {
                 if( mDaoInstance == null){
                     Log.i(LOG_TAG , "createSingleton");
-                    mDaoInstance = new EnglishChantDAO();
+                    mDaoInstance = new SelfDefinedDAO();
                 }
             }
         }
@@ -49,7 +49,7 @@ public class EnglishChantDAO implements ILearningContentDAO {
     public void init(Context aContext){
         mAndroidContext = aContext;
         mContentArray = new ArrayList<ContentVO>();
-        loadNewContent(ContentType.ENGLISH_CHANT);
+        loadNewContent(ContentType.SELF_DEFINED);
         Log.i(LOG_TAG, "done init.");
     }
 
@@ -59,9 +59,9 @@ public class EnglishChantDAO implements ILearningContentDAO {
         SharedPreferences preference = mAndroidContext.getSharedPreferences(KEY_MAIN_PREFERENCE, 0);
         String[] strArr;
 
-        if (!preference.contains(ENGLISH_CHANT.KEY_JSON_DATA_ENGLISH_CHANT)) { //Do nothing if already in SD card. onStart()-> getLastStatus() will get them.
+        if (!preference.contains(SELF_DEFINED.KEY_JSON_DATA_SELF_DEFINED)) { //Do nothing if already in SD card. onStart()-> getLastStatus() will get them.
 
-            mWordsToLearn = mAndroidContext.getString(R.string.English_chant);
+            mWordsToLearn = mAndroidContext.getString(R.string.self_defined);
             strArr = mWordsToLearn.split(",");
             //init json strcture only for the fist time, the next time will use the persistent settings.
             for (int i = 0; i < strArr.length; i++) {
@@ -71,14 +71,13 @@ public class EnglishChantDAO implements ILearningContentDAO {
                 mContentArray.add(vo);
             }
             //Collections.shuffle(mContentArray);
-
             Log.w(LOG_TAG, "on init content array length: "+ mContentArray.size());
         }
     }
     /**
      * This is a singleton, call getInstance()
      */
-    private EnglishChantDAO(){
+    private SelfDefinedDAO(){
         Log.i(LOG_TAG , "init ContentDAO singleton");
     }
 
@@ -97,8 +96,8 @@ public class EnglishChantDAO implements ILearningContentDAO {
             jArray.put(ContentVO.toJson(mContentArray.get(i)));
         }
         String jArr = jArray.toString();
-        editor.putInt(ENGLISH_CHANT.KEY_LAST_POSITION_ENGLISH_CHANT, position);
-        editor.putString(ENGLISH_CHANT.KEY_JSON_DATA_ENGLISH_CHANT, jArr);
+        editor.putInt(SELF_DEFINED.KEY_LAST_POSITION_SELF_DEFINED, position);
+        editor.putString(SELF_DEFINED.KEY_JSON_DATA_SELF_DEFINED, jArr);
         Log.v(LOG_TAG, "saveLastStatus(): position: "+ position + "Json Array to save: "+ jArr);
         editor.apply();
     }
@@ -111,10 +110,10 @@ public class EnglishChantDAO implements ILearningContentDAO {
         SharedPreferences pref = mAndroidContext.getSharedPreferences(KEY_MAIN_PREFERENCE, 0);
         int pos =0;
         // init the content array
-        if (pref.contains(ENGLISH_CHANT.KEY_JSON_DATA_ENGLISH_CHANT)) {
+        if (pref.contains(SELF_DEFINED.KEY_JSON_DATA_SELF_DEFINED)) {
             mContentArray.clear();
             try {
-                mJsonArray = new JSONArray(pref.getString(ENGLISH_CHANT.KEY_JSON_DATA_ENGLISH_CHANT, ""));
+                mJsonArray = new JSONArray(pref.getString(SELF_DEFINED.KEY_JSON_DATA_SELF_DEFINED, ""));
                 Log.v(LOG_TAG, "getLastStatus(): json string >> "+ mJsonArray);
                 for (int i = 0; i < mJsonArray.length(); i++) {
                     mContentArray.add(ContentVO.jsonToContentVO((String)mJsonArray.get(i)));
@@ -126,12 +125,13 @@ public class EnglishChantDAO implements ILearningContentDAO {
                 e.printStackTrace();
             }
         }
-        pos = pref.getInt(ENGLISH_CHANT.KEY_LAST_POSITION_ENGLISH_CHANT, 0);
+        pos = pref.getInt(SELF_DEFINED.KEY_LAST_POSITION_SELF_DEFINED, 0);
         Log.v(LOG_TAG, "getLastStatus(): pos: " + pos);
         return pos;
     }
 
     public ContentVO getCurrentDisplay(int position) {
+        Log.d(LOG_TAG, "current display: "+ position);
         return mContentArray.get(position);
     }
 

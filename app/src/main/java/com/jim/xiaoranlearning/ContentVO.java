@@ -99,4 +99,7 @@ public class ContentVO implements Comparable<ContentVO>{
 	public void increaseDisplayTimes() {
 		displayTimes += 1;
 	}
+
+
+
 }

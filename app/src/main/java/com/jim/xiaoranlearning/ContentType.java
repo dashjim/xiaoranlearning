@@ -2,7 +2,7 @@ package com.jim.xiaoranlearning;
 
 public enum ContentType{
 	
-	CHINESE_265,ENGLISH_WORDS, ENGLISH_CHANT;
+	CHINESE_265,ENGLISH_WORDS, ENGLISH_CHANT, SELF_DEFINED;
 	
 	/**use to get the instance from a ordinal() values*/
     public static ContentType valueOf(int ordinal) {

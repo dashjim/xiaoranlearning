@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">无图识字</string>
+    <string name="app_name">记忆卡片</string>
     <string name="menu_title_Chinese258">《幼儿画报》高频284汉字</string>
     <string name="menu_title_English_words">Dolch 220 Sight Words</string>
     <string name="menu_title_English_Chant">《英文三字经》自然拼读</string>
-    <string name="menu_title_Manual">家长使用须知/升级/反馈</string>
+    <string name="menu_title_Manual">使用须知/升级/反馈</string>
+    <string name="menu_title_New">新建</string>
+    <string name="menu_title_self_defined">自定义</string>
+    <string name="menu_title_self_defined_export">导出自定义</string>
 
 
     <string name="Chinese_265">
@@ -17,13 +20,15 @@
     <string name="English_chant">
         我家dad,脾气bad,让我sad,有只cat,非常fat,专吃rat,放下plate,赶到gate,已经late,清晨wake,来到lake,钓上snake,撇下net,鱼没get,衣服wet,为捉pest,从不rest,本领best,一只pig,非常big,把洞dig,没给tip,把我lip,装上zip,一只kite,颜色white,被狗bite,学会ride,妈妈pride,清晨jog,带上dog,踩到frog,轻轻hop,跳上top,唱起pop,把眼close,用我nose,去闻rose,喝着coke,听着joke,把腰broke,举着gun,瞄准sun,不停run,小小bug,把我hug,找个excuse,借车use,遭到refuse,假装mute,真是cute,开着car,向着star,路途far,想变smart,必须start,学习art,一个driver,掉进river,生命over,一个robber,专抢rubber,穿上shirt,脱下skirt,扔进dirt,这只bird,总跑third,个子short,喜欢sport,跑到airport,拿着fork,吃着pork,一个nurse,丢了purse,买只turtle,颜色purple,一只goat,穿件coat,上了boat,一片oat,卡在throat,燃烧oil,直到boil,倒进soil,是否join,抛起coin,带上hook,来到brook,水面look,手拿book,一边look,开始cook,炎热noon,跳上spoon,飞到moon,一个fool,掉进pool,真是cool,西瓜round,长在ground,被我found,一只mouse,穿件blouse,走进house,天在snow,风在blow,树在grow,秋风follow,树叶yellow,落到pillow,不知cow,近况how,去问now,一座town,不停down,快要drown,一只bee,躲进tree,没人see,悬崖deep,开着jeep,莫要sleep,抱着Barbie,吃着cookie,看着movie,被我niece,摔成piece,丢了glue,没有clue,脸气blue,手拿tissue,排好queue,一颗pea,掉进sea,泡壶tea,身体weak,爬上peak,无力speak,吞进lead,摸摸head,已经dead,吃着bread,报纸spread,开始read,不停train,没有pain,哪有gain,把手raise,老师praise,小狗paw,那根straw,把画draw,坐在lawn,学习law,被窝cozy,床上lazy,真是crazy,抱着puppy,心里happy,如果shy,不敢try,机会fly,不停cry,眼泪dry,很多day,没发pay,无话say,天空gray,无心play,回家stay,顽皮monkey,捡起key,扔向donkey,为了honey,节省money,有个boy,玩着toy,心中joy,跳进soy,尽情enjoy,一只hare,居然dare,对我stare,困难share,互相care,赶走scare,天气fair,凉爽air,吹拂hair,崭新chair,滚下stair,需要repair,昨天fire,今天hire,后天retire,扑灭fire,真是tire,离我near,含着tear,叫我dear,一头bear,裙子wear,采摘pear,一只deer,举起beer,大喊cheers,这个engineer,事事pioneer,洗完face,系好lace,参加race,吃着rice,加点ice,口喊nice,听听music,变变magic,迟迟garlic,看完comic,野外picnic,动作quick,把只cock,藏进sock,脱下jacket,忘记ticket,还在pocket,同学each,手拿peach,来到beach,观众watch,激烈match,球来catch,天气sunny,身无penny,感觉funny,最快runner,成了winner,享受dinner,拿起ink,不加think,仰头drink,敌人tank,装上bank,老天thank,一首song,歌词long,总唱wrong,山路along,跑步long,身体strong,像个king,插上wing,不停swing,美好spring,歌儿sing,鲜花bring,一头fox,躲避ox,藏进box,忘背text,绝无next,身体ill,买来pill,堆成hill,一根needle,掉进noodle,饭后hurry,书包carry,迟到sorry,我家parrot,爱吃carrot,做个dream,掉进stream,大声scream,穿着dress,下着chess,一辆truck,满载duck,一路luck,碰到trouble,努力double,小小age,读读page,种种orange,打开fridge,端出porridge,扔下bridge,喝酒enough,大声laugh,不停cough,他很tough从不laugh,心中wish,钓到fish,做成dish,飞机crash,烧成ash,损失cash,一个youth,张开mouth,吹到south,洗完bath,学习math,我的mother,生个brother,想要another,寒冷weather,身披leather,头戴feather,高高sky,不知why,掉下spy,站在peak,对天speak,了night,打开light,保护sight,方法right,坚持fight,前途bright,一只chick,动作quick,把我kick,吃饭quiet,注意diet,猫吃mice,味道nice,想吃twice,这对twin,总是win
     </string>
-
+    <string name="self_defined">
+        Please add from above.
+    </string>
     <string name="ui_do_you_know_it">记住了？</string>
     <string name="ui_move_current_word_to_left">把当前的字移到最左边。</string>
-    <string name="ui_OK">确定</string>
-    <string name="ui_Cancel">取消</string>
-    <string name="ui_Delete">取消</string>
-    <string name="ui_add_new">新建</string>
+    <string name="ui_OK">移动</string>
+    <string name="ui_Cancel">移回</string>
+    <string name="ui_Delete">删除</string>
+    <string name="ui_add_new">Add New</string>
     <string name="ui_add_new_card">加入新卡片。</string>
 
     <string name="ui_next_time_takes_effect">下次启动生效</string>

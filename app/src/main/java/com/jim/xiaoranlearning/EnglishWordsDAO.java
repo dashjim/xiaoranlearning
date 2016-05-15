@@ -9,14 +9,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-public class EnglishWordsDAO implements ILearningContantDAO {
+public class EnglishWordsDAO implements ILearningContentDAO {
 	
 	static public final String KEY_MAIN_PREFERENCE = "main_prefe";
-	
-	public static class CHINESE285{
-		static public final String KEY_JSON_DATA_CHINESE285 = "json_data_Chinese_285"; //JSON and its meta data 
-		static public final String KEY_LAST_POSITION_CHINESE285= "last_position_Chinese285";
-	}
+
 	public static class ENGLISH_WORDS{
 		static public final String KEY_LAST_POSITION_ENGLISH_WORDS = "last_position_english_words";
 		static public final String KEY_JSON_DATA_ENGLISH_WORDS = "json_data_English_words"; //JSON and its meta data 
@@ -77,11 +73,7 @@ public class EnglishWordsDAO implements ILearningContantDAO {
 				mContentArray.add(vo);
 			}
 			//Collections.shuffle(mContentArray);
-			int i = 0;
-			for (ContentVO vo : mContentArray) {
-				vo.setRawSequence(i);
-				i = i++;
-			}
+
 			Log.w(LOG_TAG, "on init content array length: "+ mContentArray.size());
 		}
 	}
@@ -147,11 +139,13 @@ public class EnglishWordsDAO implements ILearningContantDAO {
 	
 	public void markKnown(int position) {
 		mContentArray.get(position).setKnown(true);
+		Collections.sort(mContentArray);
 		Log.d(LOG_TAG, "markKnown(): last item in colection: "+ mContentArray.get(mContentArray.size()-1).getContent());
 	}
 	
 	public void markUnKnown(int position) {
 		mContentArray.get(position).setKnown(false);
+		Collections.sort(mContentArray);
 		Log.d(LOG_TAG, "markUnKnown(): last item in colection: "+ mContentArray.get(mContentArray.size()-1).getContent());
 	}
 	

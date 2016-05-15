@@ -14,7 +14,7 @@ import java.util.Collections;
  * TODO factory pattern to apply, split content and content generation logic - different combination of them are different generation strategy
  * @author ji5
  */
-public class Chinese265DAO implements ILearningContantDAO {
+public class Chinese265DAO implements ILearningContentDAO {
 	
 	static public final String KEY_MAIN_PREFERENCE = "main_prefe";
 	
@@ -36,7 +36,7 @@ public class Chinese265DAO implements ILearningContantDAO {
 	private Context mAndroidContext;
 	private static final String LOG_TAG = "ContentDAO";
 	
-	private static ILearningContantDAO mDaoInstance = null;
+	private static ILearningContentDAO mDaoInstance = null;
 	private JSONArray mJsonArray;
 	private ArrayList<ContentVO> mContentArray;
 	
@@ -45,7 +45,7 @@ public class Chinese265DAO implements ILearningContantDAO {
 	 * notice must ensure the androidContext initialized by setAndroidContext().
 	 * @return
 	 */
-	static public ILearningContantDAO getInstance(){
+	static public ILearningContentDAO getInstance(){
 		
 		if (mDaoInstance == null) {
 			synchronized (Chinese265DAO.class) {
@@ -59,7 +59,7 @@ public class Chinese265DAO implements ILearningContantDAO {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.jim.xiaoranlearning.ILearningContantDAO#init(android.content.Context)
+	 * @see com.jim.xiaoranlearning.ILearningContentDAO#init(android.content.Context)
 	 */
 	@Override
 	public void init(Context aContext){
@@ -70,7 +70,7 @@ public class Chinese265DAO implements ILearningContantDAO {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.jim.xiaoranlearning.ILearningContantDAO#loadNewContent(com.jim.xiaoranlearning.Chinese265DAO.ContentType)
+	 * @see com.jim.xiaoranlearning.ILearningContentDAO#loadNewContent(com.jim.xiaoranlearning.Chinese265DAO.ContentType)
 	 */
 	@Override
 	public void loadNewContent(ContentType contentType) {
@@ -91,11 +91,11 @@ public class Chinese265DAO implements ILearningContantDAO {
 			int i = 0;
 			for (ContentVO vo : mContentArray) {
 				vo.setRawSequence(i);
-				i = i++;
+				i = i+1;
 			}
 			Log.w(LOG_TAG, "on init content array length: "+ mContentArray.size());
 		}
-		//init json strcture only for the fist time, the next time will use the persistent settings.
+		//init json structure only for the fist time, the next time will use the persistent settings.
 	}
 	
 	private Chinese265DAO(){
@@ -103,7 +103,7 @@ public class Chinese265DAO implements ILearningContantDAO {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.jim.xiaoranlearning.ILearningContantDAO#saveLastStatus(int)
+	 * @see com.jim.xiaoranlearning.ILearningContentDAO#saveLastStatus(int)
 	 */
 	@Override
 	public void saveLastStatus(int position){
@@ -121,16 +121,15 @@ public class Chinese265DAO implements ILearningContantDAO {
 		editor.putInt(CHINESE285.KEY_LAST_POSITION_CHINESE285, position); 
 		editor.putString(CHINESE285.KEY_JSON_DATA_CHINESE285, jArr);
 		Log.v(LOG_TAG, "saveLastStatus(): position: "+ position + "Json Array to save: "+ jArr);
-		editor.commit();
+		editor.apply();
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.jim.xiaoranlearning.ILearningContantDAO#getLastStatus()
+	 * @see com.jim.xiaoranlearning.ILearningContentDAO#getLastStatus()
 	 */
 	@Override
 	public int getLastStatus(){ 
 		SharedPreferences pref = mAndroidContext.getSharedPreferences(KEY_MAIN_PREFERENCE, 0);
-		ContentType contentType = ContentType.valueOf(pref.getInt(KEY_LAST_CONTNET_TYPE, 0));
 		int pos =0;
 
 		// init the content array
@@ -155,7 +154,7 @@ public class Chinese265DAO implements ILearningContantDAO {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.jim.xiaoranlearning.ILearningContantDAO#getCurrentDisplay(int)
+	 * @see com.jim.xiaoranlearning.ILearningContentDAO#getCurrentDisplay(int)
 	 */
 	@Override
 	public ContentVO getCurrentDisplay(int position) {
@@ -163,25 +162,27 @@ public class Chinese265DAO implements ILearningContantDAO {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.jim.xiaoranlearning.ILearningContantDAO#markKnown(int)
+	 * @see com.jim.xiaoranlearning.ILearningContentDAO#markKnown(int)
 	 */
 	@Override
 	public void markKnown(int position) {
 		mContentArray.get(position).setKnown(true);
+		Collections.sort(mContentArray);
 		Log.d(LOG_TAG, "markKnown(): last item in colection: "+ mContentArray.get(mContentArray.size()-1).getContent());
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.jim.xiaoranlearning.ILearningContantDAO#markUnKnown(int)
+	 * @see com.jim.xiaoranlearning.ILearningContentDAO#markUnKnown(int)
 	 */
 	@Override
 	public void markUnKnown(int position) {
 		mContentArray.get(position).setKnown(false);
+		Collections.sort(mContentArray);
 		Log.d(LOG_TAG, "markUnKnown(): last item in colection: "+ mContentArray.get(mContentArray.size()-1).getContent());
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.jim.xiaoranlearning.ILearningContantDAO#increaseDisplayTimes(int)
+	 * @see com.jim.xiaoranlearning.ILearningContentDAO#increaseDisplayTimes(int)
 	 */
 	@Override
 	public void increaseDisplayTimes(int pos) {
@@ -190,14 +191,14 @@ public class Chinese265DAO implements ILearningContantDAO {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.jim.xiaoranlearning.ILearningContantDAO#increaseLearned()
+	 * @see com.jim.xiaoranlearning.ILearningContentDAO#increaseLearned()
 	 */
 	@Override
 	public void increaseLearned() {
 //		mLearned += 1;
 	}
 	/* (non-Javadoc)
-	 * @see com.jim.xiaoranlearning.ILearningContantDAO#getContentLength()
+	 * @see com.jim.xiaoranlearning.ILearningContentDAO#getContentLength()
 	 */
 	@Override
 	public int getContentLength(){ return mContentArray.size();}
