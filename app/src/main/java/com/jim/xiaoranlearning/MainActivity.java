@@ -90,6 +90,16 @@ public class MainActivity extends AppCompatActivity {
 		customizeActionBar();
 	}
 
+	public boolean ismTtsStarted() {
+		return mTtsStarted;
+	}
+
+	public void setmTtsStarted(boolean mTtsStarted) {
+		this.mTtsStarted = mTtsStarted;
+	}
+
+	boolean mTtsStarted = false;
+
 	private void customizeActionBar() {
 		mActionBar = getSupportActionBar();
 
@@ -118,6 +128,54 @@ public class MainActivity extends AppCompatActivity {
 					}else{
 						Toast.makeText(mAndroidContext, "Nothing to add.",
 								Toast.LENGTH_SHORT).show();
+					}
+				}
+			});
+
+			final Button playButton = (Button) mActionBar.getCustomView().findViewById(R.id.play_button);
+			playButton.setOnClickListener(new View.OnClickListener(){
+				boolean mThreadShouldStop = false;
+
+				@Override
+				public void onClick(View v) {
+					if (! (mContentDao instanceof SelfDefinedDAO)) return;
+
+					if(!ismTtsStarted()){
+
+						Log.d(LOG_TAG, "ismTtsStarted?  "+ ismTtsStarted());
+
+						setmTtsStarted(true);
+						new Thread(new Runnable() {
+							@Override
+							public void run() {
+								mThreadShouldStop = false;
+								ContentVO vo;
+								for (int i = 0; i < mContentDao.getContentLength(); i++) {
+
+									Log.d(LOG_TAG, "mthread should stop? " + mThreadShouldStop);
+
+									if(mThreadShouldStop) return;
+									vo = mContentDao.getCurrentDisplay(i);
+									if (vo != null && !vo.isKnown()) {
+										mTTS.speak(vo.getContent() + "..... ", TextToSpeech.QUEUE_ADD, null);
+									}
+									try {
+										Thread.sleep(2600);
+									} catch (InterruptedException e) {
+										e.printStackTrace();
+									}
+								}
+							}
+
+						}).start();
+						return; // avoid stop.
+					}
+
+					if(ismTtsStarted()){
+						Log.d(LOG_TAG, "stopping TTS.");
+						mThreadShouldStop = true;
+						mTTS.stop();
+						setmTtsStarted(false);
 					}
 				}
 			});
@@ -349,10 +407,10 @@ public class MainActivity extends AppCompatActivity {
 			TextView sequenceTextView = (TextView) rootView.findViewById(R.id.section_label);
 			TextView contentTextView = (TextView) rootView.findViewById(R.id.section_content);
 			
-			sequenceTextView.setText("NO. "+Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER))
-                                    + " - Learned "
-                                    + Integer.toString(getArguments().getInt(ARG_SECTION_READ_TIMES))
-                                    + " time(s)"
+			sequenceTextView.setText(String.format("NO. %s/%s Learned %s time(s)",
+					Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)),
+					mContentDao.getContentLength(),
+					Integer.toString(getArguments().getInt(ARG_SECTION_READ_TIMES)))
             );
 			sequenceTextView.setTextSize(8);
 			CharSequence currentText = getArguments().getCharSequence(ARG_SECTION_CONTENT);
