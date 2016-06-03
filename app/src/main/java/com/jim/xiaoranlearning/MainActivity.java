@@ -150,19 +150,21 @@ public class MainActivity extends AppCompatActivity {
 							public void run() {
 								mThreadShouldStop = false;
 								ContentVO vo;
-								for (int i = 0; i < mContentDao.getContentLength(); i++) {
+								while(!mThreadShouldStop){
+									for (int i = 0; i < mContentDao.getContentLength(); i++) {
 
-									Log.d(LOG_TAG, "mthread should stop? " + mThreadShouldStop);
+										Log.d(LOG_TAG, "mthread should stop? " + mThreadShouldStop);
 
-									if(mThreadShouldStop) return;
-									vo = mContentDao.getCurrentDisplay(i);
-									if (vo != null && !vo.isKnown()) {
-										mTTS.speak(vo.getContent() + "..... ", TextToSpeech.QUEUE_ADD, null);
-									}
-									try {
-										Thread.sleep(2600);
-									} catch (InterruptedException e) {
-										e.printStackTrace();
+										if(mThreadShouldStop) return;
+										vo = mContentDao.getCurrentDisplay(i);
+										if (vo != null && !vo.isKnown()) {
+											mTTS.speak(vo.getContent() + "..... ", TextToSpeech.QUEUE_ADD, null);
+											try {
+												Thread.sleep(2600);
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											}
+										}
 									}
 								}
 							}
@@ -428,8 +430,20 @@ public class MainActivity extends AppCompatActivity {
 				for (String aSplit : split) {
 					longest = longest.length() > aSplit.length() ? longest : aSplit;
 				}
+
+				float maxSize = 0;
+				switch (split.length) {
+					case 1:  maxSize = 70; 	break;
+					case 2:  maxSize = 70; 	break;
+					case 3:  maxSize = 42; 	break;
+				}
+
 				Log.d(LOG_TAG, "longest: "+ longest);
-				contentTextView.setTextSize((float)(mDeviceWidth/longest.length()/ mScreenScaleDensity *1.4));
+				float textSize = (float) (mDeviceWidth / longest.length() / mScreenScaleDensity * 1.4);
+				textSize = Math.min(maxSize, textSize);
+				contentTextView.setTextSize(textSize);
+				Log.d(LOG_TAG, "current text size:" + textSize);
+
 			}else{
                 contentTextView.setTextSize((float)(mDeviceWidth/currentText.length()/ mScreenScaleDensity));
             }
@@ -441,7 +455,6 @@ public class MainActivity extends AppCompatActivity {
 				Log.v(LOG_TAG, "text color: blue");
 				contentTextView.setTextColor(Color.BLUE);
 			}
-			Log.d(LOG_TAG, "current text size:" + mDeviceWidth / currentText.length() / mScreenScaleDensity * 0.8);
 
             contentTextView.setLayerType(View.LAYER_TYPE_SOFTWARE, null); // a workaround of a big size text display bug
 			contentTextView.setOnLongClickListener(new LongClickHandler());

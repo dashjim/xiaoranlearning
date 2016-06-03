@@ -17,7 +17,7 @@
         <activity
             android:name="com.jim.xiaoranlearning.MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             >
             <!--android:screenOrientation="portrait" -->
 
