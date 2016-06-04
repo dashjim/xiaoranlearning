@@ -1,21 +1,16 @@
 package com.jim.xiaoranlearning;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.Writer;
-import java.util.Locale;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 import android.support.v4.app.Fragment;
@@ -33,6 +28,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.Writer;
+import java.util.Locale;
 
 //OnInitListener is the interface for TTS
 public class MainActivity extends AppCompatActivity {
@@ -63,9 +63,13 @@ public class MainActivity extends AppCompatActivity {
 	static private TextToSpeech mTTS;
 	static private ActionBar mActionBar;
 
+	Handler mainHandler;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		mainHandler = new Handler(this.getMainLooper());
 
 		//init ContentDAO
 		mAndroidContext = getApplicationContext();
@@ -158,9 +162,18 @@ public class MainActivity extends AppCompatActivity {
 										if(mThreadShouldStop) return;
 										vo = mContentDao.getCurrentDisplay(i);
 										if (vo != null && !vo.isKnown()) {
+
+											final int finalI = i;
+											mainHandler.post(new Runnable() { // must do change the viewPager in main thread.
+												@Override
+												public void run() {
+													mViewPager.setCurrentItem(finalI);
+												}
+											});
+
 											mTTS.speak(vo.getContent() + "..... ", TextToSpeech.QUEUE_ADD, null);
 											try {
-												Thread.sleep(2600);
+												Thread.sleep(3000);
 											} catch (InterruptedException e) {
 												e.printStackTrace();
 											}
